@@ -20,3 +20,15 @@ after_success:
     - docker push jmuyu/multi-docker-nginx  
     - docker push jmuyu/multi-docker-server
     - docker push jmuyu/multi-docker-worker
+
+deploly:
+    provider: elasticbeenstalk
+    region: us-east-2
+    app: multi-docker
+    env: MultiDocker-env
+    bucket_name: elasticbeanstalk-us-east-2-528305935981
+    bucket_path: docker-multi
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
