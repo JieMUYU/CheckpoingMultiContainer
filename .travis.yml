@@ -1,0 +1,22 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t jmuyu/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run jmuyu/react-test npm test -- --coverage
+
+after_success:
+    - docker build -t jmuyu/multi-docker-client ./client
+    - docker build -t jmuyu/multi-docker-nginx ./nginx
+    - docker build -t jmuyu/multi-docker-server ./server
+    - docker build -t jmuyu/multi-docker-worker ./worker
+
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+    - docker push jmuyu/multi-docker-client
+    - docker push jmuyu/multi-docker-nginx  
+    - docker push jmuyu/multi-docker-server
+    - docker push jmuyu/multi-docker-worker
